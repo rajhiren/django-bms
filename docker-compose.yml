@@ -4,12 +4,12 @@ services:
   db:
     image: postgres
     volumes:
-      - /db:/var/lib/postgresql/data
+      - ./db:/var/lib/postgresql/data
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/code
+      - ./mysite:/code
     ports:
       - "8000:8000"
     depends_on:
