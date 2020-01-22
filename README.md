@@ -24,7 +24,8 @@ and activities OR create a fixture to generate fake data.
 
 ## Prerequisites:
 * Docker & docker-compose
-* Python 3.6.5 (Django 2.1)
+* Python Latest
+* Django Latest
 * virtualenv & pip
 * git
 
