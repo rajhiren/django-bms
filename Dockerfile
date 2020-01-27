@@ -12,6 +12,7 @@ RUN pip install -r requirements.txt
 
 COPY . /code/
 
-#EXPOSE 8000
-#ENTRYPOINT ["python"]
-#CMD ["mytest.py"]
+#CMD ["python", "mysite/manage.py", "makemigrations"]
+
+CMD ["python", "manage.py", "migrate"]
+

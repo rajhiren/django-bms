@@ -3,14 +3,42 @@ version: '3'
 services:
   db:
     image: postgres
-    volumes:
-      - ./db:/var/lib/postgresql/data
+#    volumes:
+#      - ./db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./mysite:/code
     ports:
       - "8000:8000"
+    networks:
+      - backend
     depends_on:
       - db
+    environment:
+      DJANGO_DB_NAME : postgres
+      DJANGO_SU_NAME : mydemo
+      DJANGO_SU_EMAIL : hiren.raj@gmail.com
+      DJANGO_SU_PASSWORD : mydemo
+
+  db-admin:
+      image: dpage/pgadmin4
+      environment:
+        PGADMIN_DEFAULT_EMAIL: mydemo
+        PGADMIN_DEFAULT_PASSWORD: mydemo
+      depends_on:
+        - db
+      ports:
+        - "8080:80"
+      networks:
+        - backend
+
+networks:
+  backend:
+    driver: bridge

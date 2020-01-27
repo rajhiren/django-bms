@@ -1,0 +1,29 @@
+{% extends 'bms/base.html' %}
+
+{% block content %}
+    <div class="content-section">
+        <h1>Scorecard</h1>
+        <table class="table table-striped table-light">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Game #</th>
+              <th scope="col">Host</th>
+              <th scope="col">Guest</th>
+              <th scope="col">Host Score</th>
+              <th scope="col">Guest Score</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for game in games %}
+            <tr>
+              <th scope="row">{{ game.id }}</th>
+                <td><a href="{% url 'team' %}{{ game.id }}/">{{ game.host }}</a></td>
+              <td>{{ game.guest }}</td>
+              <td>{{ game.host_score }}</td>
+              <td>{{ game.guest_score }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+    </div>
+{% endblock content%}
