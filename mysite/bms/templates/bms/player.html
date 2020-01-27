@@ -1,0 +1,15 @@
+{% extends 'bms/base.html' %}
+
+{% block content %}
+    <h1>Player Detail</h1>
+        <article class="media content-section">
+            <div class="media-body">
+            <h2><a class="article-title" href="#">{{ player.name }}</a></h2>
+            <hr>
+            <p class="article-content">Height : {{ player.height }}</p>
+            <p class="article-content">Team : {{ team }}</p>
+            <p class="article-content">Games : {{ games }}</p>
+            <p class="article-content">Avg Score : {{ average_score.score__avg }}</p>
+          </div>
+        </article>
+{% endblock content%}

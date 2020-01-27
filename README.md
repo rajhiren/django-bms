@@ -34,4 +34,10 @@ and activities OR create a fixture to generate fake data.
 
 ```
   docker-compose up --build
+
+  docker-compose exec web python manage.py migrate
 ```
+
+## Assumptions
+* all player height will be in `Centimeters`
+* all username will be `Email`
