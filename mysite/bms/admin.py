@@ -7,3 +7,4 @@ models = apps_config.get_models()
 
 for model in models:
     admin.site.register(model)
+

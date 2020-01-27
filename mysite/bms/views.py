@@ -5,6 +5,7 @@ from django.db.models import Avg
 from django.contrib.auth.decorators import login_required
 
 
+
 # Create your views here.
 def index(request):
     return HttpResponse("Basketball management system")
@@ -40,3 +41,4 @@ def scoreboard(request):
         'games' : games,
     }
     return render(request, 'bms/home.html', context)
+

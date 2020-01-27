@@ -116,3 +116,6 @@ class Player_Stat(models.Model):
 
     def get_absolute_url(self):
         return reverse('player_stat_detail', args=[str(self.id)])
+
+
+
