@@ -34,8 +34,25 @@ and activities OR create a fixture to generate fake data.
 
 ```
   docker-compose up --build
+```
 
-  docker-compose exec web python manage.py migrate
+## Urls 
+
+```
+    Admin : 
+        Url  :  http://0.0.0.0:8000/admin/
+        User :  mydemo
+        pswd :  mydemo
+
+    BMS : 
+        Url  :  http://0.0.0.0:8000/login/
+        User :  mydemo
+        pswd :  mydemo
+
+    Admin : 
+        Url  :  http://localhost:8080/browser/
+        User :  mydemo
+        pswd :  mydemo
 ```
 
 ## Assumptions
