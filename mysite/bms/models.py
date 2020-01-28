@@ -21,6 +21,10 @@ class Role(models.Model):
 
     def __str__(self):
         return str(self.type)
+        # return 'Type : %s, Id : %s' % (self.type, self.id)
+
+    def get_id(self):
+        return str(self.id)
 
     def get_absolute_url(self):
         return reverse('role_detail', args=[str(self.id)])

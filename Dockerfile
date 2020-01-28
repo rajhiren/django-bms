@@ -12,7 +12,4 @@ RUN pip install -r requirements.txt
 
 COPY . /code/
 
-#CMD ["python", "mysite/manage.py", "makemigrations"]
-
-CMD ["python", "manage.py", "migrate"]
 
