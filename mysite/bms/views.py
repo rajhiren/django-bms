@@ -29,8 +29,12 @@ def player_detail(request, player_id=None):
 
 @login_required
 def team_detail(request, team_id=None):
-    team = Team.objects.filter(id=team_id)
-    return render(request, 'bms/team.html', team)
+    teams = Team.objects.all()
+    # team = Team.objects.filter(id=team_id)
+    context = {
+        'teams': teams,
+    }
+    return render(request, 'bms/team.html', context)
 
 
 @login_required

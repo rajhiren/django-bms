@@ -12,7 +12,7 @@ services:
 
   web:
     build: .
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py init_bms_data &&python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./mysite:/code
     ports:
