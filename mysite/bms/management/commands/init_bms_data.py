@@ -1,13 +1,13 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand, CommandError
-from bms.models import Team, Role, User_Role
+from bms.models import Team, Role, User_Role, Coach
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from faker import Faker
-from faker.providers import internet
 
 
 class Command(BaseCommand):
-    help = 'Polulate data for BMS'
+    help = 'Populate data for BMS'
 
     def team_data(self, fake):
         for t in range(15):
@@ -30,24 +30,49 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('Successfully inserted data for Role "%s"' % role.type))
 
     def user_data(self, fake):
-        for i in range(175):
+        for i in range(176):
             username = fake.user_name()
+            password = 'mydemo'
             try:
-                user = User.objects.create_user(username=username, email=fake.safe_email(), password=username)
+                user = User.objects.create_user(username=username, email=fake.safe_email(), password=password,
+                                                first_name=fake.first_name(), last_name=fake.last_name())
             except ObjectDoesNotExist:
                 raise CommandError('User Model Does not exits')
             user.save()
             self.stdout.write(self.style.SUCCESS('User Created : "%s"' % user.username))
 
-    def player_role_data(self, fake):
+    def user_role_data(self, fake):
         users = User.objects.filter(is_superuser=False)
-        role = Role.objects.filter(type='P')
-        # role = Role.ROLE_TYPES
-        # print(role)
-        # for user in users[:1]:
-        #     u = User_Role(user_id=user.id, roles_id=role[0], is_logged_in=fake.pybool())
-        #     u.save()
-        #     # print(user.id, role.get_id(), fake.pybool())
+        player = get_object_or_404(Role, type='P')
+        coach = get_object_or_404(Role, type='C')
+
+        # players mapping
+        for user in users[:159]:
+            try:
+                p = User_Role(user_id=user.id, role_id=player.id, is_logged_in=fake.pybool())
+            except player.DoesNotExists:
+                raise CommandError('Issue in adding user role mapping')
+            p.save()
+            self.stdout.write(self.style.SUCCESS('User Role Mapped : { %s : %s }' % (user.username, player.type)))
+
+        # coach mapping
+        for user in users[159:]:
+            try:
+                u = User_Role(user_id=user.id, role_id=coach.id, is_logged_in=fake.pybool())
+            except coach.DoesNotExists:
+                raise CommandError('Issue in adding user role mapping')
+            u.save()
+            self.stdout.write(self.style.SUCCESS('User Role Mapped : { %s : %s }' % (user.username, coach.type)))
+
+    def coach(self, fake):
+        teams = Team.objects.all()
+        coach = Role.objects.order_by('id').first()
+        users = User_Role.objects.filter(role_id=coach.id)
+
+        for i in range(len(teams)):
+            coach = Coach(team_id=teams[i].id, user_id=users[i].id)
+            coach.save()
+            self.stdout.write(self.style.SUCCESS('Coach Created  : %s ' % users[i].id))
 
 
     def handle(self, *args, **options):
@@ -62,5 +87,8 @@ class Command(BaseCommand):
         # initiate user data
         self.user_data(fake)
 
-        # # initiate user_role data for players
-        # self.player_role_data(fake)
+        # initiate user_role data for players
+        self.user_role_data(fake)
+
+        # initiate coach data
+        self.coach(fake)

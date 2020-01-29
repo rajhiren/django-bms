@@ -5,18 +5,16 @@ from django.db.models import Avg
 from django.contrib.auth.decorators import login_required
 
 
-
-# Create your views here.
 def index(request):
     return HttpResponse("Basketball management system")
 
 
-def coach_detail(request):
+def coach(request):
     return HttpResponse('take this')
 
 
 @login_required
-def player_detail(request, player_id=None):
+def player(request, player_id=None):
     player = Player.objects.filter(id=player_id).first()
     stat = Player_Stat.objects.filter(player_id=player_id)
     context = {
@@ -29,7 +27,7 @@ def player_detail(request, player_id=None):
 
 
 @login_required
-def team_detail(request, team_id=None):
+def team(request, team_id=None):
     teams = Team.objects.all()
     # team = Team.objects.filter(id=team_id)
     context = {
