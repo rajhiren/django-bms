@@ -1,6 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand, CommandError
-from bms.models import Team, Role, User_Role, Coach
+from bms.models import Team, Role, User_Role, Coach, Player
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from faker import Faker
@@ -10,7 +10,7 @@ class Command(BaseCommand):
     help = 'Populate data for BMS'
 
     def team_data(self, fake):
-        for t in range(15):
+        for t in range(16):
             try:
                 team = Team(name=fake.slug(), abbr=fake.lexify(text='???', letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ'))
             except Team.DoesNotExists:
@@ -66,29 +66,50 @@ class Command(BaseCommand):
 
     def coach(self, fake):
         teams = Team.objects.all()
-        coach = Role.objects.order_by('id').first()
+        coach = Role.objects.filter(type='C').first()
         users = User_Role.objects.filter(role_id=coach.id)
 
         for i in range(len(teams)):
-            coach = Coach(team_id=teams[i].id, user_id=users[i].id)
+            try:
+                coach = Coach(team_id=teams[i].id, user_id=users[i].id)
+            except Coach.DoesNotExists:
+                raise CommandError('Issue with adding user as Coach')
             coach.save()
             self.stdout.write(self.style.SUCCESS('Coach Created  : %s ' % users[i].id))
 
+    def player(self, fake):
+        teams = Team.objects.all()
+        player = Role.objects.filter(type='P').first()
+        users = User_Role.objects.filter(role_id=player.id)
+
+        for i in range(len(teams)):
+            for j in range(10):
+                print(teams[i].id,users[j].user.id, fake.random_int(min=170, max=255, step=1))
+                # try:
+                #     coach = Player(team_id=teams[i].id, user_id=users[j].id,
+                #                    height=fake.random_int(min=170, max=255, step=1))
+                # except Coach.DoesNotExists:
+                #     raise CommandError('Issue with adding user as Player')
+                # coach.save()
+                # self.stdout.write(self.style.SUCCESS('Player Created  : %s ' % users[j].id))
 
     def handle(self, *args, **options):
         fake = Faker()
 
-        # initiate team data
-        self.team_data(fake)
+        # # initiate team data
+        # self.team_data(fake)
+        #
+        # # initiate role data
+        # self.role_data(fake)
+        #
+        # # initiate user data
+        # self.user_data(fake)
+        #
+        # # initiate user_role data for players
+        # self.user_role_data(fake)
+        #
+        # # initiate coach data
+        # self.coach(fake)
 
-        # initiate role data
-        self.role_data(fake)
-
-        # initiate user data
-        self.user_data(fake)
-
-        # initiate user_role data for players
-        self.user_role_data(fake)
-
-        # initiate coach data
-        self.coach(fake)
+        # initiate player
+        self.player(fake)

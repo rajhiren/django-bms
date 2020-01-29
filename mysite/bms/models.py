@@ -98,7 +98,6 @@ class Coach(models.Model):
 
     def __str__(self):
         return 'Name : %s %s' % (self.user.first_name, self.user.last_name)
-        # return str(self.id)
 
     def get_absolute_url(self):
         return reverse('coach', args=[str(self.id)])
