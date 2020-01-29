@@ -31,11 +31,15 @@ and activities OR create a fixture to generate fake data.
 
 ```
   docker-compose up --build
+  docker-compose exec web python manage.py init_bms_data
+
 ```
 
 ## Urls 
 
 ```
+Note : Default password for everything is `mydemo`
+
     Admin : 
         Url  :  http://0.0.0.0:8000/admin/
         User :  mydemo
