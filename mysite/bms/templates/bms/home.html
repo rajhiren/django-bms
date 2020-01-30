@@ -1,5 +1,5 @@
 {% extends 'bms/base.html' %}
-
+{{ request }}
 {% block content %}
     <div class="content-section">
         <h1>Scorecard</h1>
@@ -11,16 +11,30 @@
               <th scope="col">Guest</th>
               <th scope="col">Host Score</th>
               <th scope="col">Guest Score</th>
+              <th scope="col">Round</th>
             </tr>
           </thead>
           <tbody>
           {% for game in games %}
             <tr>
-              <th scope="row">{{ game.id }}</th>
-                <td><a href="{% url 'team' %}{{ game.id }}/">{{ game.host }}</a></td>
-              <td>{{ game.guest }}</td>
-              <td>{{ game.host_score }}</td>
-              <td>{{ game.guest_score }}</td>
+                <th scope="row">{{ game.id }}</th>
+                <td><a href="{% url 'team' game.id%}/">{{ game.host }}</a></td>
+                <td><a href="{% url 'team' game.id%}/">{{ game.guest }}</a></td>
+                {% if game.host_score > game.guest_score %}
+                    <td class="bg-success">
+                {% else %}
+                    <td>
+                {% endif %}
+                    {{ game.host_score }}
+                </td>
+                {% if game.host_score < game.guest_score %}
+                    <td class="bg-success">
+                {% else %}
+                    <td>
+                {% endif %}
+                    {{ game.guest_score }}
+                </td>
+                <td>{{ game.round_number }}</td>
             </tr>
           {% endfor %}
           </tbody>

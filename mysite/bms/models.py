@@ -66,11 +66,30 @@ class Team(models.Model):
 
 
 class Game(models.Model):
+    QF = 'QF'
+    SF = 'SF'
+    FI = 'FI'
+    WI = 'WI'
+
+    ROUNDS = [
+        (QF, 'Quarter Final'),
+        (SF, 'Semi Final'),
+        (FI, 'Final'),
+        (WI, 'Winner')
+    ]
+
     host = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='host')
     guest = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='guest')
     host_score = models.IntegerField()
     guest_score = models.IntegerField()
+    winner = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='winner')
     date = models.DateField(verbose_name='game date')
+    round_number = models.CharField(
+        max_length=2,
+        choices=ROUNDS,
+        default=QF,
+        verbose_name='round type'
+    )
 
     def __str__(self):
         return 'Game # %s' % (self.id)
@@ -94,7 +113,6 @@ class Team_Stat(models.Model):
 class Coach(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    # name = models.TextField(max_length=200)
 
     def __str__(self):
         return 'Name : %s %s' % (self.user.first_name, self.user.last_name)
@@ -106,7 +124,6 @@ class Coach(models.Model):
 class Player(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    # name = models.TextField(max_length=200)
     height = models.IntegerField()
 
     def __str__(self):
