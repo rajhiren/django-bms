@@ -61,3 +61,16 @@ Login in PGAdmin and create super admin account. ( Forgive me for not automating
 ## Assumptions
 * all player height will be in `Centimeters`
 * all username will be `Email`
+
+
+## screenshots
+
+![alt text](https://github.com/rajhiren/django-bms/blob/master/screenshots/Screen%20Shot%202020-02-03%20at%2000.39.13.png)
+![alt_text](https://github.com/rajhiren/django-bms/blob/master/screenshots/Screen%20Shot%202020-02-03%20at%2000.39.33.png)
+![alt_text](https://github.com/rajhiren/django-bms/blob/master/screenshots/Screen%20Shot%202020-02-03%20at%2000.41.28.png)
+![alt_text](https://github.com/rajhiren/django-bms/blob/master/screenshots/Screen%20Shot%202020-02-03%20at%2000.41.42.png)
+![alt_text](https://github.com/rajhiren/django-bms/blob/master/screenshots/Screen%20Shot%202020-02-03%20at%2000.43.45.png)
+![alt_text](https://github.com/rajhiren/django-bms/blob/master/screenshots/Screen%20Shot%202020-02-03%20at%2000.43.54.png)
+![alt_text](https://github.com/rajhiren/django-bms/blob/master/screenshots/Screen%20Shot%202020-02-03%20at%2000.50.21.png)
+![alt_text](https://github.com/rajhiren/django-bms/blob/master/screenshots/Screen%20Shot%202020-02-03%20at%2000.50.39.png)
+![alt_text](https://github.com/rajhiren/django-bms/blob/master/screenshots/Screen%20Shot%202020-02-03%20at%2000.51.14.png)
