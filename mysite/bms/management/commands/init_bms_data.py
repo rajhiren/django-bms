@@ -2,6 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand, CommandError
 from bms.models import Team, Role, User_Role, Coach, Player, Game, User_Stat, Team_Stat, Player_Stat
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from faker import Faker
 
@@ -121,8 +122,8 @@ class Command(BaseCommand):
 
         # not to self, I can move this and make it a function as well. But it will task for future
         for i in range(len(hosts)):
-            host_score = fake.random_int(min=0, max=186, step=1)
-            guest_score = fake.random_int(min=0, max=186, step=1)
+            host_score = fake.random_int(min=5, max=186, step=1)
+            guest_score = fake.random_int(min=5, max=186, step=1)
             winner = hosts[i] if host_score > guest_score else guests[i]
 
             # lets simplify things so easy to read
@@ -153,12 +154,48 @@ class Command(BaseCommand):
                 stat.save()
                 self.stdout.write(self.style.SUCCESS('Stat saved for  %s ' % user.id))
 
+    def team_stat(self):
+        teams = Team.objects.all()
+
+        for team in teams:
+            scores = Game.objects.filter( Q(host_id=team.id) | Q(guest_id=team.id) )
+            for team_score in scores:
+                # add host stat
+                host_stat = Team_Stat(score=team_score.host_score, game_id=team_score.id, team_id=team_score.host_id)
+                host_stat.save()
+                self.stdout.write(self.style.SUCCESS('Stat saved for Game # %s ' % team_score.id))
+
+                # add guest stat
+                guest_stat = Team_Stat(score=team_score.guest_score, game_id=team_score.id, team_id=team_score.guest_id)
+                guest_stat.save()
+                self.stdout.write(self.style.SUCCESS('Stat saved for Game # %s ' % team_score.id))
+
+
+    def player_stat(self, fake):
+        stats = Team_Stat.objects.all()
+
+        for team_stat in stats:
+            # this should not be used in production, however this is dummy data to whatever gets jobs done for now
+            players = Player.objects.filter(team_id=team_stat.team_id).order_by('?')[:5]
+            player_scores = self.generate_random_player_score(5, team_stat.score)
+
+            for i in range(len(players)):
+                player_stat = Player_Stat(score=player_scores[i], game_id=team_stat.game_id, player_id=players[i].id)
+                player_stat.save()
+                self.stdout.write(self.style.SUCCESS('Stat saved for Player # %s : %s ' % (players[i].id, player_scores[i] )))
+
+
+    def generate_random_player_score(self, n, total):
+        import random
+        dividers = sorted(random.sample(range(1, total), n - 1))
+        return [a - b for a, b in zip(dividers + [total], [0] + dividers)]
+
     def handle(self, *args, **options):
         fake = Faker()
 
         # lets begin, order is important here
 
-        # initiate team data
+        # # initiate team data
         # self.team(fake)
         #
         # # initiate role data
@@ -171,12 +208,15 @@ class Command(BaseCommand):
         #
         # # initiate coach data
         # self.coach(fake)
-
-        # initiate player
-        self.player(fake)
+        #
+        # # initiate player
+        # self.player(fake)
         #
         # # initiate game
         # self.qf_game(fake)
         # self.sf_game(fake)
         # self.fi_game(fake)
         # self.winner(fake)
+        #
+        # self.team_stat()
+        self.player_stat(fake)
