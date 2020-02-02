@@ -1,7 +1,28 @@
 {% extends 'bms/base.html' %}
 
 {% block content %}
-    <h1>Team Performance</h1>
+    <div class="content-section">
+    <h1> Players List </h1>
 
-    {{ team.name }}
+    <h2>Team Avg Score : {{ average_score.score__avg }}</h2>
+        <table class="table table-striped table-light">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Player #</th>
+              <th scope="col">Full Name</th>
+            </tr>
+          </thead>
+
+            <tbody>
+                {% for player in players %}
+                    <tr>
+                        <th scope="row">{{ player.id }}</th>
+                        <td><a href="{% url 'player' player.user_id %}">{{ player.user.get_full_name }}</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
 {% endblock content%}

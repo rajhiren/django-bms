@@ -18,8 +18,8 @@
           {% for game in games %}
             <tr>
                 <th scope="row">{{ game.id }}</th>
-                <td><a href="{% url 'team' game.id%}/">{{ game.host }}</a></td>
-                <td><a href="{% url 'team' game.id%}/">{{ game.guest }}</a></td>
+                <td><a href="{% url 'team' %}{{ game.host_id }}/">{{ game.host }}</a></td>
+                <td><a href="{% url 'team' %}{{ game.guest_id }}/">{{ game.guest }}</a></td>
                 {% if game.host_score > game.guest_score %}
                     <td class="bg-success">
                 {% else %}

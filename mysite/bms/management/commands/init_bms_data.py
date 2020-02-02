@@ -11,6 +11,10 @@ class Command(BaseCommand):
     help = 'Populate data for BMS'
 
     def team(self, fake):
+        """
+            populate teams
+        :param fake:
+        """
         for t in range(16):
             try:
                 team = Team(name=fake.slug(), abbr=fake.lexify(text='???', letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ'))
@@ -21,6 +25,10 @@ class Command(BaseCommand):
                 self.style.SUCCESS('Successfully inserted Team : "%s" , Abbr : "%s"' % (team.name, team.abbr)))
 
     def role(self, fake):
+        """
+            populate role types
+        :param fake:
+        """
         types = ['C', 'P']
         for type in range(len(types)):
             try:
@@ -31,6 +39,10 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('Successfully inserted data for Role "%s"' % role.type))
 
     def user(self, fake):
+        """
+            populate users
+        :param fake:
+        """
         for i in range(176):
             username = fake.user_name()
             password = 'mydemo'
@@ -43,6 +55,10 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('User Created : "%s"' % user.username))
 
     def user_role(self, fake):
+        """
+            populate user roles as players and coach
+        :param fake:
+        """
         users = User.objects.filter(is_superuser=False)
         player = get_object_or_404(Role, type='P')
         coach = get_object_or_404(Role, type='C')
@@ -160,16 +176,17 @@ class Command(BaseCommand):
         for team in teams:
             scores = Game.objects.filter( Q(host_id=team.id) | Q(guest_id=team.id) )
             for team_score in scores:
+                team_id = team_score.host_id if team_score.host_id == team.id else team_score.guest_id
+                game_score = team_score.host_score if team_score.host_id == team.id else team_score.guest_score
                 # add host stat
-                host_stat = Team_Stat(score=team_score.host_score, game_id=team_score.id, team_id=team_score.host_id)
+                host_stat = Team_Stat(score=game_score, game_id=team_score.id, team_id=team_id)
                 host_stat.save()
                 self.stdout.write(self.style.SUCCESS('Stat saved for Game # %s ' % team_score.id))
 
                 # add guest stat
-                guest_stat = Team_Stat(score=team_score.guest_score, game_id=team_score.id, team_id=team_score.guest_id)
-                guest_stat.save()
-                self.stdout.write(self.style.SUCCESS('Stat saved for Game # %s ' % team_score.id))
-
+                # guest_stat = Team_Stat(score=team_score.guest_score, game_id=team_score.id, team_id=team_score.guest_id)
+                # guest_stat.save()
+                # self.stdout.write(self.style.SUCCESS('Stat saved for Game # %s ' % team_score.id))
 
     def player_stat(self, fake):
         stats = Team_Stat.objects.all()
@@ -184,7 +201,6 @@ class Command(BaseCommand):
                 player_stat.save()
                 self.stdout.write(self.style.SUCCESS('Stat saved for Player # %s : %s ' % (players[i].id, player_scores[i] )))
 
-
     def generate_random_player_score(self, n, total):
         import random
         dividers = sorted(random.sample(range(1, total), n - 1))
@@ -195,28 +211,29 @@ class Command(BaseCommand):
 
         # lets begin, order is important here
 
-        # # initiate team data
-        # self.team(fake)
-        #
-        # # initiate role data
-        # self.role(fake)
-        #
-        # # initiate user data
-        # self.user(fake)
-        # self.user_role(fake)
-        # self.user_stat(fake)
-        #
-        # # initiate coach data
-        # self.coach(fake)
-        #
-        # # initiate player
-        # self.player(fake)
-        #
-        # # initiate game
-        # self.qf_game(fake)
-        # self.sf_game(fake)
-        # self.fi_game(fake)
-        # self.winner(fake)
-        #
-        # self.team_stat()
+        # initiate team data
+        self.team(fake)
+
+        # initiate role data
+        self.role(fake)
+
+        # initiate user data
+        self.user(fake)
+        self.user_role(fake)
+        self.user_stat(fake)
+
+        # initiate coach data
+        self.coach(fake)
+
+        # initiate player
+        self.player(fake)
+
+        # initiate game
+        self.qf_game(fake)
+        self.sf_game(fake)
+        self.fi_game(fake)
+        self.winner(fake)
+
+        # init stats data
+        self.team_stat()
         self.player_stat(fake)

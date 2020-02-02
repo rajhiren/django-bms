@@ -4,7 +4,7 @@
     <h1>Player Detail</h1>
         <article class="media content-section">
             <div class="media-body">
-            <h2><a class="article-title" href="#">{{ player.name }}</a></h2>
+            <h2><a class="article-title" href="#">{{ player.user.get_full_name }}</a></h2>
             <hr>
             <p class="article-content">Height : {{ player.height }}</p>
             <p class="article-content">Team : {{ team }}</p>
