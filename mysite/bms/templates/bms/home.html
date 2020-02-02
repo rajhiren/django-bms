@@ -3,6 +3,7 @@
 {% block content %}
     <div class="content-section">
         <h1>Scorecard</h1>
+
         <table class="table table-striped table-light">
           <thead class="thead-dark">
             <tr>
@@ -18,8 +19,15 @@
           {% for game in games %}
             <tr>
                 <th scope="row">{{ game.id }}</th>
-                <td><a href="{% url 'team' %}{{ game.host_id }}/">{{ game.host }}</a></td>
-                <td><a href="{% url 'team' %}{{ game.guest_id }}/">{{ game.guest }}</a></td>
+
+                {% if user_role.role.type != 'P' %}
+                    <td><a href="{% url 'team' %}{{ game.host_id }}/">{{ game.host }}</a></td>
+                    <td><a href="{% url 'team' %}{{ game.guest_id }}/">{{ game.guest }}</a></td>
+                {% else %}
+                    <td>{{ game.host }}</td>
+                    <td>{{ game.guest }}</td>
+                {% endif %}
+
                 {% if game.host_score > game.guest_score %}
                     <td class="bg-success">
                 {% else %}

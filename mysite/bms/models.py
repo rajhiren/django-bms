@@ -7,10 +7,12 @@ from django.utils import timezone
 class Role(models.Model):
     COACH = 'C'
     PLAYER = 'P'
+    ADMIN = 'A'
 
     ROLE_TYPES = [
         (COACH, 'Coach'),
-        (PLAYER, 'Player')
+        (PLAYER, 'Player'),
+        (ADMIN, 'Admin'),
     ]
     type = models.CharField(
         max_length=2,
@@ -36,7 +38,8 @@ class User_Role(models.Model):
     is_logged_in = models.BooleanField(default=False)
 
     def __str__(self):
-        return 'User : %s, Role : %s' % (self.user.username, self.role.type)
+        return str(self.id)
+        # return 'User : %s, Role : %s' % (self.user.username, self.role.type)
 
     def get_absolute_url(self):
         return reverse('user_role', args=[str(self.id)])

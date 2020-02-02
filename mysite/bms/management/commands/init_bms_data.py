@@ -29,7 +29,7 @@ class Command(BaseCommand):
             populate role types
         :param fake:
         """
-        types = ['C', 'P']
+        types = ['C', 'P', 'A']
         for type in range(len(types)):
             try:
                 role = Role(type=types[type])
@@ -43,7 +43,7 @@ class Command(BaseCommand):
             populate users
         :param fake:
         """
-        for i in range(176):
+        for i in range(177):
             username = fake.user_name()
             password = 'mydemo'
             try:
@@ -62,6 +62,7 @@ class Command(BaseCommand):
         users = User.objects.filter(is_superuser=False)
         player = get_object_or_404(Role, type='P')
         coach = get_object_or_404(Role, type='C')
+        admin = get_object_or_404(Role, type='A')
 
         # players mapping
         for user in users[:160]:
@@ -73,13 +74,22 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('User Role Mapped : { %s : %s }' % (user.username, player.type)))
 
         # coach mapping
-        for user in users[160:]:
+        for user in users[160:176]:
             try:
                 u = User_Role(user_id=user.id, role_id=coach.id, is_logged_in=fake.pybool())
             except coach.DoesNotExists:
                 raise CommandError('Issue in adding user role mapping')
             u.save()
             self.stdout.write(self.style.SUCCESS('User Role Mapped : { %s : %s }' % (user.username, coach.type)))
+
+        # super admin
+        for user in users[176:]:
+            try:
+                u = User_Role(user_id=user.id, role_id=admin.id, is_logged_in=fake.pybool())
+            except ObjectDoesNotExist:
+                raise CommandError('Issue in adding user role mapping')
+            u.save()
+            self.stdout.write(self.style.SUCCESS('Super Admin Mapped : { %s : %s }' % (user.username, admin.type)))
 
     def coach(self, fake):
         teams = Team.objects.all()

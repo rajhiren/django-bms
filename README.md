@@ -50,10 +50,12 @@ Note : Default password for everything is `mydemo`
         User :  mydemo
         pswd :  mydemo
 
-    Admin : 
+    PGAdmin : 
         Url  :  http://localhost:8080/browser/
         User :  mydemo
         pswd :  mydemo
+
+Login in PGAdmin and create super admin account. ( Forgive me for not automating this)
 ```
 
 ## Assumptions

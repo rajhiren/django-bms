@@ -1,0 +1,36 @@
+{% extends 'bms/base.html' %}
+
+{% block content %}
+    <div class="content-section">
+    <h1> User Statistics </h1>
+
+    <h2 class="bg-success">Total Users Online  : {{ total_online.id__count }}</h2>
+        <table class="table table-striped table-light">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">User #</th>
+              <th scope="col">Total Logins</th>
+              <th scope="col">Time Spent</th>
+              <th scope="col">Is Online</th>
+            </tr>
+          </thead>
+
+            <tbody>
+                {% for stat in stats %}
+                    <tr>
+                        <th scope="row">{{ stat.user_id }}</th>
+                        <td>{{ stat.dcount }}</td>
+                        <td>{{ stat.duration }} </td>
+                        {% if stat.user_id in online_users %}
+                            <td class="bg-success"> Online </td>
+                        {% else %}
+                             <td class="bg-warning">   Offline </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+{% endblock content%}
