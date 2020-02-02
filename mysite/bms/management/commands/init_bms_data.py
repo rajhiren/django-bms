@@ -13,7 +13,7 @@ class Command(BaseCommand):
         for t in range(16):
             try:
                 team = Team(name=fake.slug(), abbr=fake.lexify(text='???', letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ'))
-            except Team.DoesNotExists:
+            except ObjectDoesNotExist:
                 raise CommandError('Team Model Does not exists')
             team.save()
             self.stdout.write(
@@ -24,7 +24,7 @@ class Command(BaseCommand):
         for type in range(len(types)):
             try:
                 role = Role(type=types[type])
-            except Role.DoesNotExists:
+            except ObjectDoesNotExist:
                 raise CommandError('Role Model Does not exists')
             role.save()
             self.stdout.write(self.style.SUCCESS('Successfully inserted data for Role "%s"' % role.type))
@@ -47,16 +47,16 @@ class Command(BaseCommand):
         coach = get_object_or_404(Role, type='C')
 
         # players mapping
-        for user in users[:159]:
+        for user in users[:160]:
             try:
                 p = User_Role(user_id=user.id, role_id=player.id, is_logged_in=fake.pybool())
-            except player.DoesNotExists:
+            except ObjectDoesNotExist:
                 raise CommandError('Issue in adding user role mapping')
             p.save()
             self.stdout.write(self.style.SUCCESS('User Role Mapped : { %s : %s }' % (user.username, player.type)))
 
         # coach mapping
-        for user in users[159:]:
+        for user in users[160:]:
             try:
                 u = User_Role(user_id=user.id, role_id=coach.id, is_logged_in=fake.pybool())
             except coach.DoesNotExists:
@@ -71,11 +71,11 @@ class Command(BaseCommand):
 
         for i in range(len(teams)):
             try:
-                coach = Coach(team_id=teams[i].id, user_id=users[i].id)
-            except Coach.DoesNotExists:
+                coach = Coach(team_id=teams[i].id, user_id=users[i].user_id)
+            except ObjectDoesNotExist:
                 raise CommandError('Issue with adding user as Coach')
             coach.save()
-            self.stdout.write(self.style.SUCCESS('Coach Created  : %s ' % users[i].id))
+            self.stdout.write(self.style.SUCCESS('Coach Created  : %s ' % users[i].user_id))
 
     def player(self, fake):
         teams = Team.objects.all()
@@ -87,12 +87,14 @@ class Command(BaseCommand):
             counter = 0
             while counter < 10:
                 try:
-                    coach = Player(team_id=team.id, user_id=users[total].user.id,
-                                   height=fake.random_int(min=170, max=255, step=1))
-                except Coach.DoesNotExists:
-                    raise CommandError('Issue with adding user as Player')
-                coach.save()
-                self.stdout.write(self.style.SUCCESS('Player Created  : %s ' % users[total].user.first_name))
+                    player = Player(team_id=team.id, user_id=users[total].user.id,
+                                    height=fake.random_int(min=170, max=255, step=1))
+                except ObjectDoesNotExist:
+                    raise Warning('Issue with adding user as Player')
+                player.save()
+                self.stdout.write(self.style.SUCCESS('Player Created  : %s %s' %
+                                                     (users[total].user.first_name,
+                                                      users[total].user.username)))
                 total += 1
                 counter += 1
 
@@ -156,7 +158,7 @@ class Command(BaseCommand):
 
         # lets begin, order is important here
 
-        # # initiate team data
+        # initiate team data
         # self.team(fake)
         #
         # # initiate role data
@@ -165,14 +167,14 @@ class Command(BaseCommand):
         # # initiate user data
         # self.user(fake)
         # self.user_role(fake)
-        self.user_stat(fake)
+        # self.user_stat(fake)
         #
         # # initiate coach data
         # self.coach(fake)
 
-        # # initiate player
-        # self.player(fake)
-
+        # initiate player
+        self.player(fake)
+        #
         # # initiate game
         # self.qf_game(fake)
         # self.sf_game(fake)
